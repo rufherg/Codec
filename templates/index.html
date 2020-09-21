@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codec</title>
+<link rel="stylesheet" type="text/css" href="static/style.css">
+<script src="static/jquery.min.js"></script>
+</head>
+<body>
+	<div class="top-container">
+		<div class="top-container" style="top: 40px;">
+			<h1>Try to codec</h1>
+		</div>
+		<div class="wrapper">
+			<form id="form">
+			<div class="container-left">
+				<textarea name="encode" id="encode"></textarea>
+			</div>
+			<div class="container-center">
+				<div class="container-center-input">
+					<select name="type" id="type" style="width: 100%; font-size: 16px;">
+						<option value="1">Base64</option>
+						<option value="2">Base32</option>
+						<option value="3">Unicode</option>
+						<option value="4">UTF-7</option>
+						<option value="5">UTF-8</option>
+						<option value="6">URL</option>
+						<option value="7">Hex</option>
+						<option value="8">Html</option>
+						<option value="9">ROT13</option>
+						<option value="10">Flask Session</option>
+						<option value="11">JSON Web Token</option>
+					</select>
+					<br></br>
+					<input type="text" id="key" placeholder="Input Secret Key" style="width: 100%; visibility: hidden;">
+					<input type="submit" value="Encode>>" name="action_1" id="action_1">
+					<input type="submit" value="<<Decode" name="action_2" id="action_2">
+				</div>
+			</div>
+			<div class="container-right">
+				<textarea name="decode" id="decode"></textarea>
+			</div>
+			</form>
+            <script>
+				$("#action_1").click(function(){
+					var type = $("#type").val();
+					var string = $("#encode").val();
+					var action = "1";
+					var data = {
+						"data": {
+							"type": type,
+							"string": string,
+							"action": action
+						}
+					};
+					if ((type == "10" || type == "11") && $("#key").val() != ""){
+						data.data.key = $("#key").val();
+					}
+					$.ajax({
+						url: "coding",
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: "application/json;charset=utf-8",
+						success: function(result){
+						$("#decode").val(result);
+						},
+						error:function(){
+						alert("Coding Error! Please check the data!");
+						}
+					})
+					return false;
+				})
+				$("#action_2").click(function(){
+					var type = $("#type").val();
+					var string = $("#decode").val();
+					var action = "2";
+					var data = {
+						"data": {
+							"type": type,
+							"string": string,
+							"action": action
+						}
+					};
+					if (type == "10" || type == "11" && $("#key").val() != ""){
+						data.data.key = $("#key").val();
+					}
+					$.ajax({
+						url: "/coding",
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: "application/json;charset=utf-8",
+						success: function(result){
+						$("#encode").val(result);
+						},
+						error:function(){
+							alert("Coding Error! Please check the data!");
+						}
+					})
+					return false;
+				})
+				$("#type").click(function(){
+					if ($("#type").val() == "10" || $("#type").val() == "11"){
+						document.getElementById('key').style.visibility="visible";
+					}
+					else {
+						document.getElementById('key').style.visibility="hidden";
+					}
+				})
+			</script>
+        <ul class="bg-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		</div>
+	</div>
+</body>
+</html>
